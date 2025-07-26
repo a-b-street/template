@@ -1,12 +1,12 @@
 <script lang="ts">
   import "bootstrap/dist/css/bootstrap.min.css";
   import { onMount } from "svelte";
-  import { mode, map } from "./";
+  import { mode, map } from "./index.svelte.js";
   import { MapLibre } from "svelte-maplibre";
   import {
     Layout,
-    sidebarContents,
-    mapContents,
+    mainContents,
+    leftContents,
   } from "svelte-utils/two_column_layout";
   import {
     basemapStyles,
@@ -26,18 +26,18 @@
     wasmReady = true;
   });
 
-  let sidebarDiv: HTMLDivElement | undefined;
-  let mapDiv: HTMLDivElement | undefined;
+  let leftDiv: HTMLDivElement | undefined;
+  let mainDiv: HTMLDivElement | undefined;
   $effect(() => {
-    if (sidebarDiv && $sidebarContents) {
-      sidebarDiv.innerHTML = "";
-      sidebarDiv.appendChild($sidebarContents);
+    if (leftDiv && $leftContents) {
+      leftDiv.innerHTML = "";
+      leftDiv.appendChild($leftContents);
     }
   });
   $effect(() => {
-    if (mapDiv && $mapContents) {
-      mapDiv.innerHTML = "";
-      mapDiv.appendChild($mapContents);
+    if (mainDiv && $mainContents) {
+      mainDiv.innerHTML = "";
+      mainDiv.appendChild($mainContents);
     }
   });
 </script>
@@ -46,28 +46,28 @@
   {#snippet left()}
     <h1>TEMPLATE TITLE</h1>
 
-    <div bind:this={sidebarDiv}></div>
+    <div bind:this={leftDiv}></div>
   {/snippet}
 
   {#snippet main()}
     <div style="position:relative; width: 100%; height: 100vh;">
       <MapLibre
         style={basemapStyles[basemap]}
-        bind:map
+        bind:map={map.value}
         hash
         onerror={(e) => {
           console.log(e.error);
         }}
       >
-        <StandardControls {map} />
-        <MapContextMenu {map} />
+        <StandardControls map={map.value} />
+        <MapContextMenu map={map.value} />
         <Basemaps bind:basemap />
 
-        <div bind:this={mapDiv}></div>
+        <div bind:this={mainDiv}></div>
 
-        {#if mode.kind == "title"}
+        {#if mode.value.kind == "title"}
           <TitleMode {wasmReady} />
-        {:else if mode.kind == "main"}
+        {:else if mode.value.kind == "main"}
           <MainMode />
         {/if}
       </MapLibre>

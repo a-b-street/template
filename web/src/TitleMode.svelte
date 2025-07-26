@@ -6,7 +6,7 @@
   import { Loading } from "svelte-utils";
   import { onMount } from "svelte";
   import { SplitComponent } from "svelte-utils/two_column_layout";
-  import { map, model } from "./";
+  import { map, mode, model } from "./index.svelte.js";
 
   let { wasmReady }: { wasmReady: boolean } = $props();
 
@@ -65,7 +65,8 @@
   }
 
   function gotModel(m: backend.Model) {
-    model.set(m);
+    model.value = m;
+    mode.value = { kind: "main" };
     // TODO zoom fit
   }
 </script>
@@ -73,12 +74,16 @@
 <Loading {loading} />
 
 <SplitComponent>
-  {#snippet sidebar()}
+  {#snippet left()}
     {#if examples.length}
       <div>
         <label>
           Load an example
-          <select class="form-select" bind:value={loadExample} onchange={loadFromExample}>
+          <select
+            class="form-select"
+            bind:value={loadExample}
+            onchange={loadFromExample}
+          >
             {#each examples as x}
               <option value={x}>{x}</option>
             {/each}
@@ -104,14 +109,14 @@
     <p class="fst-italic my-3">or...</p>
 
     <OverpassSelector
-      {map}
+      map={map!.value}
       {gotXml}
       onloading={(msg) => (loading = msg)}
       onerror={(msg) => window.alert(msg)}
     />
   {/snippet}
 
-  {#snippet map()}
+  {#snippet main()}
     <PolygonToolLayer />
   {/snippet}
 </SplitComponent>
