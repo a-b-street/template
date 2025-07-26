@@ -1,6 +1,6 @@
 <script lang="ts">
   import "bootstrap/dist/css/bootstrap.min.css";
-  import { onMount } from "svelte";
+  import { tick, onMount } from "svelte";
   import { mode, map } from "./index.svelte.js";
   import { MapLibre } from "svelte-maplibre";
   import {
@@ -24,6 +24,14 @@
   onMount(async () => {
     await backend.default();
     wasmReady = true;
+  });
+
+  // TODO Hack
+  $effect(async () => {
+    if (map.value) {
+      await tick();
+      map.value?.resize();
+    }
   });
 </script>
 
