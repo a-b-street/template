@@ -1,0 +1,5 @@
+*.swp
+target
+node_modules
+
+web/public
