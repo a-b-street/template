@@ -4,6 +4,7 @@
   import { OverpassSelector } from "svelte-utils/overpass";
   import type { Feature, Polygon } from "geojson";
   import { Loading } from "svelte-utils";
+  import { bbox } from "svelte-utils/map";
   import { onMount } from "svelte";
   import { SplitComponent } from "svelte-utils/two_column_layout";
   import { map, mode, model } from "./index.svelte.js";
@@ -67,7 +68,16 @@
   function gotModel(m: backend.Model) {
     model.value = m;
     mode.value = { kind: "main" };
-    // TODO zoom fit
+    zoomToFit();
+  }
+
+  function zoomToFit() {
+    if (map.value && model.value) {
+      map.value.fitBounds(bbox(JSON.parse(model.value.getEdges())), {
+        animate: false,
+        padding: 10,
+      });
+    }
   }
 </script>
 
