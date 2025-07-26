@@ -5,8 +5,8 @@
   import { MapLibre } from "svelte-maplibre";
   import {
     Layout,
-    mainContents,
-    leftContents,
+    mainTarget,
+    leftTarget,
   } from "svelte-utils/two_column_layout";
   import {
     basemapStyles,
@@ -25,28 +25,13 @@
     await backend.default();
     wasmReady = true;
   });
-
-  let leftDiv: HTMLDivElement | undefined;
-  let mainDiv: HTMLDivElement | undefined;
-  $effect(() => {
-    if (leftDiv && $leftContents) {
-      leftDiv.innerHTML = "";
-      leftDiv.appendChild($leftContents);
-    }
-  });
-  $effect(() => {
-    if (mainDiv && $mainContents) {
-      mainDiv.innerHTML = "";
-      mainDiv.appendChild($mainContents);
-    }
-  });
 </script>
 
 <Layout>
   {#snippet left()}
     <h1>TEMPLATE TITLE</h1>
 
-    <div bind:this={leftDiv}></div>
+    <div bind:this={leftTarget.value}></div>
   {/snippet}
 
   {#snippet main()}
@@ -63,7 +48,7 @@
         <MapContextMenu map={map.value} />
         <Basemaps bind:basemap />
 
-        <div bind:this={mainDiv}></div>
+        <div bind:this={mainTarget.value}></div>
 
         {#if mode.value.kind == "title"}
           <TitleMode {wasmReady} />
