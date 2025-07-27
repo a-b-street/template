@@ -11,7 +11,7 @@
 
 <SplitComponent>
   {#snippet left()}
-    <button class="btn btn-danger" on:click={backToTitle}>
+    <button class="btn btn-danger" onclick={backToTitle}>
       Choose another area
     </button>
   {/snippet}
