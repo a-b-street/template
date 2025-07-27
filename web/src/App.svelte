@@ -27,10 +27,11 @@
   });
 
   // TODO Hack
-  $effect(async () => {
+  $effect(() => {
     if (map.value) {
-      await tick();
-      map.value?.resize();
+      tick().then(() => {
+        map.value?.resize();
+      });
     }
   });
 </script>
