@@ -1,6 +1,6 @@
 <script lang="ts">
   import "bootstrap/dist/css/bootstrap.min.css";
-  import { tick, onMount } from "svelte";
+  import { tick, onMount, untrack } from "svelte";
   import { mode, map } from "./index.svelte.js";
   import { MapLibre } from "svelte-maplibre";
   import {
@@ -34,6 +34,45 @@
       });
     }
   });
+
+  // svelte-ignore state_referenced_locally
+  let initialStyle = basemapStyles.get(basemap)!;
+  // TODO Upstream to svelte-maplibre. It feels a bit brittle how we detect the sources and layers created here, vs from the basemap
+  $effect(() => {
+    if (basemap) {
+      untrack(() => {
+        map.value?.setStyle(basemapStyles.get(basemap)!, {
+          transformStyle: (previousStyle, nextStyle) => {
+            if (!previousStyle) {
+              return nextStyle;
+            }
+
+            let customLayers = previousStyle.layers.filter((l) =>
+              ["circle-", "line-", "fill-", "heatmap-", "symbol-"].some(
+                (prefix) => l.id.startsWith(prefix),
+              ),
+            );
+            let layers = nextStyle.layers.concat(customLayers);
+            let sources = nextStyle.sources;
+
+            for (let [key, value] of Object.entries(
+              previousStyle.sources || {},
+            )) {
+              if (key.startsWith("geojson-") || key.startsWith("heatmap")) {
+                sources[key] = value;
+              }
+            }
+
+            return {
+              ...nextStyle,
+              sources: sources,
+              layers: layers,
+            };
+          },
+        });
+      });
+    }
+  });
 </script>
 
 <Layout>
@@ -46,7 +85,7 @@
   {#snippet main()}
     <div style="position:relative; width: 100%; height: 100vh;">
       <MapLibre
-        style={basemapStyles[basemap]}
+        style={initialStyle}
         bind:map={map.value}
         hash
         onerror={(e) => {
