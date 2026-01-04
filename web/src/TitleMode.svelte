@@ -1,7 +1,7 @@
 <script lang="ts">
   import * as backend from "../../backend/pkg";
   import { PolygonToolLayer } from "maplibre-draw-polygon";
-  import { OverpassSelector } from "svelte-utils/overpass";
+  import { OsmLoader } from "svelte-utils/osm";
   import type { Feature, Polygon } from "geojson";
   import { Loading } from "svelte-utils";
   import { bbox } from "svelte-utils/map";
@@ -41,25 +41,14 @@
     }
   }
 
-  let fileInput: HTMLInputElement;
-  async function loadFile(e: Event) {
+  async function onload(
+    osmInput: Uint8Array,
+    boundary: Feature<Polygon> | null,
+  ) {
     try {
-      loading = "Loading from file";
-      let bytes = await fileInput.files![0].arrayBuffer();
-      gotModel(new backend.Model(new Uint8Array(bytes)));
+      gotModel(new backend.Model(osmInput));
     } catch (err) {
-      window.alert(`Bad input file: ${err}`);
-    } finally {
-      loading = "";
-    }
-  }
-
-  async function gotXml(xml: string, boundary: Feature<Polygon>) {
-    try {
-      let bytes = new TextEncoder().encode(xml);
-      gotModel(new backend.Model(new Uint8Array(bytes)));
-    } catch (err) {
-      window.alert(`Couldn't import from Overpass: ${err}`);
+      window.alert(`Couldn't import: ${err}`);
     } finally {
       loading = "";
     }
@@ -104,23 +93,9 @@
       <p class="fst-italic my-3">or...</p>
     {/if}
 
-    <div>
-      <label class="form-label">
-        Load an osm.pbf or osm.xml file
-        <input
-          class="form-control"
-          bind:this={fileInput}
-          onchange={loadFile}
-          type="file"
-        />
-      </label>
-    </div>
-
-    <p class="fst-italic my-3">or...</p>
-
-    <OverpassSelector
+    <OsmLoader
       map={map!.value}
-      {gotXml}
+      {onload}
       onloading={(msg) => (loading = msg)}
       onerror={(msg) => window.alert(msg)}
     />
