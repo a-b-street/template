@@ -7,11 +7,11 @@ edition = "2024"
 
 [workspace.dependencies]
 anyhow = "1.0"
-geo = "0.31.0"
-geojson = { git = "https://github.com/georust/geojson", features = ["geo-types"] }
+geo = "0.33"
+geojson = "1.0"
 log = "0.4"
 serde = "1.0"
-utils = { git = "https://github.com/a-b-street/utils", features = ["serde"] }
+utils = { git = "https://github.com/a-b-street/utils" }
 
 # For local development, build dependencies in release mode once, but otherwise
 # use dev profile and avoid wasm-opt.
