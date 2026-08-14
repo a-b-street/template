@@ -1,6 +1,6 @@
 <script lang="ts">
   import { GeoJSON, hoverStateFilter, LineLayer } from "svelte-maplibre";
-  import { SplitComponent } from "svelte-utils/two_column_layout";
+  import { SplitComponent } from "abstreet-svelte-utils/two_column_layout";
   import { mode, model } from "./index.svelte.js";
 
   function backToTitle() {

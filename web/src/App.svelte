@@ -7,13 +7,13 @@
     Layout,
     mainTarget,
     leftTarget,
-  } from "svelte-utils/two_column_layout";
+  } from "abstreet-svelte-utils/two_column_layout";
   import {
     basemapStyles,
     Basemaps,
     StandardControls,
     MapContextMenu,
-  } from "svelte-utils/map";
+  } from "abstreet-svelte-utils/map";
   import TitleMode from "./TitleMode.svelte";
   import MainMode from "./MainMode.svelte";
   import * as backend from "../../backend/pkg";

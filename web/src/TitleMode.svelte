@@ -1,12 +1,12 @@
 <script lang="ts">
   import * as backend from "../../backend/pkg";
   import { PolygonToolLayer } from "maplibre-draw-polygon";
-  import { OsmLoader } from "svelte-utils/osm";
+  import { OsmLoader } from "abstreet-svelte-utils/osm";
   import type { Feature, Polygon } from "geojson";
-  import { Loading } from "svelte-utils";
-  import { bbox } from "svelte-utils/map";
+  import { Loading } from "abstreet-svelte-utils";
+  import { bbox } from "abstreet-svelte-utils/map";
   import { onMount } from "svelte";
-  import { SplitComponent } from "svelte-utils/two_column_layout";
+  import { SplitComponent } from "abstreet-svelte-utils/two_column_layout";
   import { map, mode, model } from "./index.svelte.js";
 
   let { wasmReady }: { wasmReady: boolean } = $props();
